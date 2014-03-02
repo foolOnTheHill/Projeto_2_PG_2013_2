@@ -1,7 +1,7 @@
-Segundo projeto de *Processamento Gráfico*
-=========================================
+Visualização de Objetos em 3D
+=============================
 
-**Objetivo**: Implementar o método de visualização de objetos triangulados, através do algoritmo de conversão por varredura, com métodos de interpolação de Phong, com a visibilidade garantida pelo algoritmo do *“z-buffer”*. 
+**Objetivo**: Implementar o método de visualização de objetos triangulados, através do algoritmo de conversão por varredura, com métodos de interpolação de Phong, com a visibilidade garantida pelo algoritmo do *z-buffer*. 
 
 **Parte Específica**: Produzir textura aleatória através da manipulação da cor do objeto.
 
