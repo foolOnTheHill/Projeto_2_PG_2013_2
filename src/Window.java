@@ -34,7 +34,9 @@ public class Window extends JPanel {
 	}
 	
 	/* Modelo de Iluminação de Phong. 
-	* Referências: http://titan.cs.ukzn.ac.za/opengl/opengl-d7/notes/lect14.pdf */
+	* Referências: 
+	* - http://titan.cs.ukzn.ac.za/opengl/opengl-d7/notes/lect14.pdf
+	* - http://www.uio.no/studier/emner/matnat/ifi/INF3320/h03/undervisningsmateriale/lecture5.pdf */
 	private double[] phong(Ponto pixel, Ponto normal) {
 		
 		double[] cor = new double[3];
