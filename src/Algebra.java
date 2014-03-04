@@ -1,7 +1,7 @@
+
 class Ponto implements Comparable<Ponto> {
 	double x, y, z;
 	int id;
-	int i, j;
 	
 	public Ponto (double x, double y, double z) {
 		this.x = x;
@@ -65,6 +65,9 @@ public class Algebra {
 		return r;
 	}
 	
+	/*Auxiliar p/ o Scanline
+	* Referências:
+	* - http://www.cmpe.boun.edu.tr/~sahiner/cmpe460web/FALL2009/scanlinefill.pdf */
 	public static int orientacao(double xA, double yA, double xB, double yB, double xC, double yC) {
 		
 		if (Math.round(xB - xA) == 0) {
@@ -125,5 +128,5 @@ public class Algebra {
 		
 		return 0;
 	}
-
+	
 }
