@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -29,7 +30,67 @@ public class Window extends JPanel {
 		this.fator = fator;
 	}
 	
-	private void scanline(Ponto A, Ponto B, Ponto C, double xMin, double xMax, double y) {
+	private void pintor(Ponto A, Ponto B, Ponto C, double xMin, double xMax, double y) {
+		double a, b, c;
+		double[] coords;
+		
+		Ponto P1, P2, P3, P;
+		Ponto N1, N2, N3, N;
+		Ponto V;
+		
+		double[] color;
+		
+		Ponto pixel;
+		
+		for (int x = (int) Math.round(xMin); x <= Math.round(xMax); x++) {
+			
+			pixel = new Ponto(x, y, 0); // Ponto dentro do triângulo que vai ser pintado
+			
+			/* Calcula o pixel em coordenadas de visão */
+			coords = Algebra.coordenadasBaricentricas(A, B, C, pixel);
+			
+			P1 = objeto.visao[A.id];
+			P2 = objeto.visao[B.id];
+			P3 = objeto.visao[C.id];
+			
+			a = coords[0]*(P1.x + P2.x + P3.x);
+			b = coords[1]*(P1.y + P2.y + P3.y);
+			c = coords[2]*(P1.z + P2.z + P3.z);
+			
+			P = new Ponto(a, b, c);
+			
+			/* Consulta o z-buffer*/
+			if (x >= 0 & y >= 0 & x < zbuffer.length & y < zbuffer[0].length & P.z > 0 & P.z < zbuffer[(int) x][(int) y]) {
+				zbuffer[(int) x][(int) y] = P.z;
+				
+				/*Normais dos vértices do triângulo*/
+				N1 = objeto.normais_triangulos[A.id];
+				N2 = objeto.normais_triangulos[B.id];
+				N3 = objeto.normais_triangulos[C.id];
+			
+				/*Normal do ponto atual*/
+				a = coords[0]*N1.x + coords[1]*N2.x + coords[2]*N3.x;
+				b = coords[0]*N1.y + coords[1]*N2.y + coords[2]*N3.y;
+				c = coords[0]*N1.z + coords[1]*N2.z + coords[2]*N3.z;
+				
+				N = new Ponto(a, b, c);
+				Algebra.normalizar(N);
+				
+				V = new Ponto(-P.x, -P.y, -P.z);
+				
+				if (Algebra.produtoEscalar(N, V) < 0) { /*Garantir que aponta na direção do observador*/
+					N = new Ponto(-N.x, -N.y, -N.z);
+				}
+				
+				/*Determina a cor do pixel*/
+				color = phong(P, N);
+				
+				/*Pinta o pixel*/
+				graphics.setColor(new Color((int) color[0], (int)color[1], (int)color[2]));
+				graphics.drawLine((int) x, (int) y, (int) x, (int) y);
+			}
+			
+		}
 		
 	}
 	
@@ -105,14 +166,17 @@ public class Window extends JPanel {
 		return cor;
 	}
 	
-	private void pintor(Graphics g) {
+	/* Scanline - Algoritmo de Preenchimento
+	* Referências:
+	* - http://www.cmpe.boun.edu.tr/~sahiner/cmpe460web/FALL2009/scanlinefill.pdf */
+	private void scanline(Graphics g) {
 		
 	}
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		pintor(g);
+		scanline(g);
 	}
 	
 }
-	
+		
