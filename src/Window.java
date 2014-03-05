@@ -53,9 +53,9 @@ public class Window extends JPanel {
 			P2 = objeto.visao[B.id];
 			P3 = objeto.visao[C.id];
 			
-			a = coords[0]*(P1.x + P2.x + P3.x);
-			b = coords[1]*(P1.y + P2.y + P3.y);
-			c = coords[2]*(P1.z + P2.z + P3.z);
+			a = coords[0]*P1.x + coords[1]*P2.x + coords[2]*P3.x;
+			b = coords[0]*P1.y + coords[1]*P2.y + coords[2]*P3.y;
+			c = coords[0]*P1.z + coords[1]*P2.z + coords[2]*P3.z;
 			
 			P = new Ponto(a, b, c);
 			
