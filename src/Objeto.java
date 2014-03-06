@@ -1,10 +1,9 @@
-
 public class Objeto {
 	
 	Ponto[] visao; // Pontos do objeto em coordenadas de vista
 	Ponto[] screen; // Pontos do objeto em coordenadas de tela (i.e., 2D)
 
-	double[][] triangulos;
+	int[][] triangulos;
 	
 	/*Pré-processamento*/
 	Ponto[] normais_triangulos;
