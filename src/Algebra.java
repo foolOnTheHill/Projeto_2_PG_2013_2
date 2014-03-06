@@ -66,4 +66,8 @@ public class Algebra {
 		return (int) ((xB-xA)*(yC-yA) - (yB-yA)*(xC-xA));
 	}
 	
+	public static boolean isTriangle(Ponto A, Ponto B, Ponto C) {
+		return !((A.x == B.x && A.y == B.y) || (A.x == C.x && A.y == C.y) || (B.x == C.x && B.y == C.y));
+	}
+	
 }
