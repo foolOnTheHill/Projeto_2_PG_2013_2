@@ -1,6 +1,9 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
@@ -10,7 +13,6 @@ public class Window extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	/*Informações da cena*/
-	private Camera camera;
 	private Objeto objeto;
 	private Iluminacao iluminacao;
 	
@@ -22,8 +24,7 @@ public class Window extends JPanel {
 	private char componente; // Componente que será 'perturbado'
 	private double fator; // Fator de aleatorização
 	
-	public Window(Camera camera, Objeto objeto, Iluminacao iluminacao, char componente, double fator) {
-		this.camera = camera;
+	public Window(Objeto objeto, Iluminacao iluminacao, char componente, double fator) {
 		this.objeto = objeto;
 		this.iluminacao = iluminacao;
 		this.componente = componente;
@@ -63,7 +64,7 @@ public class Window extends JPanel {
 			if (x >= 0 & y >= 0 & x < zbuffer.length & y < zbuffer[0].length & P.z > 0 & P.z < zbuffer[(int) x][(int) y]) {
 				zbuffer[(int) x][(int) y] = P.z;
 				
-				/*Normais dos vértices do triângulo*/
+				/*Normais x dos vértices do triângulo*/
 				N1 = objeto.normais_triangulos[A.id];
 				N2 = objeto.normais_triangulos[B.id];
 				N3 = objeto.normais_triangulos[C.id];
@@ -171,6 +172,122 @@ public class Window extends JPanel {
 	* - http://www.cmpe.boun.edu.tr/~sahiner/cmpe460web/FALL2009/scanlinefill.pdf */
 	private void scanline(Graphics g) {
 		
+		Dimension d = getSize();
+		Insets i = getInsets();
+		
+		int v_width = d.width - i.bottom - i.top;
+		int v_height = d.height - i.left - i.right;
+		
+		updateCoords(v_width, v_height);
+		initZ_Buffer(v_width, v_height);
+		
+		for (int k = 0; k < objeto.triangulos.length; k++) {
+			
+			double xMin, xMax, yMin, yMax;
+			double a1, a2, a3;
+			Ponto[] P = new Ponto[3];
+			Ponto A, B, C;
+			boolean changed = false;
+			
+			/*Vértices do triângulo que vai ser pintado.*/
+			P[0] = objeto.screen[objeto.triangulos[k][0]];
+			P[1] = objeto.screen[objeto.triangulos[k][1]];
+			P[2] = objeto.screen[objeto.triangulos[k][2]];
+			
+			Arrays.sort(P);
+	
+			yMin = P[0].y;
+			yMax = P[2].y;
+			
+			A = P[0];
+			
+			int or = Algebra.orientacao(P[0].x, P[0].y, P[1].x, P[1].y, P[2].x, P[2].y);
+					
+			if (or > 0) { /*Sentido anti-horário*/
+				B = P[2];
+				C = P[1];
+			} else if (or < 0) { /*Sentido horário*/
+				B = P[1];
+				C = P[2];
+			} else if (A.x > P[1].x & A.x > P[2].x){
+				B = P[1];
+				C = P[2];
+			} else if (A.x < P[1].x & A.x < P[2].x) {
+				B = P[2];
+				C = P[1];
+			} else if (P[1].x < P[2].x){
+				B = P[1];
+				C = P[2];
+			} else {
+				B = P[2];
+				C = P[1];
+			}
+			
+			if (Algebra.isTriangle(A, B, C)) {
+				
+				xMin = A.x;
+				xMax = A.x;
+				
+				/*Coeficientes angulares das retas*/
+				a1 = (B.y - A.y)/(B.x - A.x);
+				a2 = (C.y - A.y)/(C.x - A.x);
+				a3 = (C.y - B.y)/(C.x - B.x);
+				
+				if (Math.abs(A.y - B.y) == 0) {
+					xMin = Math.min(A.x, B.x);
+					xMax = Math.min(A.x, B.x);
+					changed = true;
+				} else if (Math.abs(A.y - C.y) == 0) {
+					xMin = Math.min(A.x, C.x);
+					xMax = Math.min(A.x, C.x);
+					changed = true;
+				}
+				
+				for (int y = (int) yMin; y <= (int) yMax; y++) {
+					pintor(A, B, C, xMin, xMax, y);
+					
+					if (!changed & (y == (int) B.y || y == (int) C.y)) {
+						
+						if (Math.abs(y - B.y) == 0) {
+							a1 = a3;
+						} else {
+							a2 = a3;
+						}
+						changed = true;
+					}
+					
+					if (a1 != Double.NEGATIVE_INFINITY && a1 != Double.POSITIVE_INFINITY && a1 != Double.NaN && a1 != 0) {
+						xMin += 1/a1;
+					}
+					
+					if (a2 != Double.NEGATIVE_INFINITY && a2 != Double.POSITIVE_INFINITY && a2 != Double.NaN && a2 != 0) {
+						xMax += 1/a2;
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/*Inicializa o Z-Buffer*/
+	private void initZ_Buffer(int width, int height) {
+		this.zbuffer = new double[width][height];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				this.zbuffer[i][j] = Double.POSITIVE_INFINITY;
+			}
+		}
+	}
+	
+	/*Coloca as coordenadas dos pontos em Coordenadas de Tela*/
+	private void updateCoords(int width, int height) {
+		for (int i = 0; i < objeto.screen.length; i++) {
+			objeto.screen[i].x = (int) ((objeto.screen[i].x + 1) * width / 2);
+			objeto.screen[i].y = (int) ((1 - objeto.screen[i].y) * height / 2);
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
