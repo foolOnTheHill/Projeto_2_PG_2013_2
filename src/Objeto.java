@@ -10,7 +10,7 @@ public class Objeto {
 	Ponto[] normais_vertices;
 	//
 
-	public Objeto(Ponto[] visao, Ponto[] screen, Ponto[] normais_triangulos, Ponto[] normais_vertices, double[][] triangulos) {
+	public Objeto(Ponto[] visao, Ponto[] screen, Ponto[] normais_triangulos, Ponto[] normais_vertices, int[][] triangulos) {
 		this.visao = visao;
 		this.screen = screen;
 		this.normais_triangulos = normais_triangulos;
