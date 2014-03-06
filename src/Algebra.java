@@ -59,74 +59,11 @@ public class Algebra {
 		return a_b_c;
 	}
 	
-	public static double area(Ponto A, Ponto B, Ponto C) {
-		double s = A.x*(B.y - C.y) + B.x*(C.y - A.y) + C.x*(A.y - B.y);
-		double r = Math.abs(s)/2;
-		return r;
-	}
-	
 	/*Auxiliar p/ o Scanline
-	* Referências:
-	* - http://www.cmpe.boun.edu.tr/~sahiner/cmpe460web/FALL2009/scanlinefill.pdf */
+	* Referências: Usa o Produto Vetorial no R2 para determinar a orientação dos 3 pontos.
+	* - http://stackoverflow.com/questions/3461453/determine-which-side-of-a-line-a-point-lies */
 	public static int orientacao(double xA, double yA, double xB, double yB, double xC, double yC) {
-		
-		if (Math.round(xB - xA) == 0) {
-			
-			if (xC < xB) {
-				if (yB > yA) {
-					return 1;
-				} else {
-					return -1;
-				}
-			} else if (xC > xB) {
-				if (yB > yA) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-			
-			return 0;
-		} else if (Math.round(yB - yA) == 0) {
-			
-			if (yC < yB) {
-				if (xB > xA) {
-					return -1;
-				} else {
-					return 1;
-				}
-			} else if (yC > yB) {
-				if (xB > xA) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-			
-			return 0;
-		}
-		
-		double tang = (yB - yA)/(xB - xA);
-		double y = yA - (tang*xA);
-		double comp = y + (tang*xC);
-		
-		if (tang != 0) {
-			if (yC > comp) {
-				if (xB > xA) {
-					return 1;
-				} else {
-					return -1;
-				}
-			} else if (yC < comp) {
-				if (xB > xA) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		}
-		
-		return 0;
+		return (int) ((xB-xA)*(yC-yA) - (yB-yA)*(xC-xA));
 	}
 	
 }
