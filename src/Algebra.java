@@ -36,7 +36,7 @@ public class Algebra {
 	
 	public static Ponto produtoVetorial(Ponto s, Ponto t) {
 		double i = (s.y*t.z) - (s.z*t.y);
-		double j = (s.z*t.z) - (s.x*t.z);
+		double j = (s.z*t.x) - (s.x*t.z);
 		double k = (s.x*t.y) - (s.y*t.x);
 		
 		return new Ponto(i, j, k);
@@ -64,6 +64,10 @@ public class Algebra {
 	* - http://stackoverflow.com/questions/3461453/determine-which-side-of-a-line-a-point-lies */
 	public static int orientacao(double xA, double yA, double xB, double yB, double xC, double yC) {
 		return (int) ((xB-xA)*(yC-yA) - (yB-yA)*(xC-xA));
+	}
+	
+	public static boolean isTriangle(Ponto A, Ponto B, Ponto C) {
+		return !(((int)A.x == (int)B.x && (int)A.y == (int)B.y) || ((int)A.x == (int)C.x && (int)A.y == (int)C.y) || ((int)B.x == (int)C.x && (int)B.y == (int)C.y));
 	}
 	
 }
