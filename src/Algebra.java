@@ -36,7 +36,7 @@ public class Algebra {
 	
 	public static Ponto produtoVetorial(Ponto s, Ponto t) {
 		double i = (s.y*t.z) - (s.z*t.y);
-		double j = (s.z*t.z) - (s.x*t.z);
+		double j = (s.z*t.x) - (s.x*t.z);
 		double k = (s.x*t.y) - (s.y*t.x);
 		
 		return new Ponto(i, j, k);
@@ -67,7 +67,7 @@ public class Algebra {
 	}
 	
 	public static boolean isTriangle(Ponto A, Ponto B, Ponto C) {
-		return !((A.x == B.x && A.y == B.y) || (A.x == C.x && A.y == C.y) || (B.x == C.x && B.y == C.y));
+		return !(((int)A.x == (int)B.x && (int)A.y == (int)B.y) || ((int)A.x == (int)C.x && (int)A.y == (int)C.y) || ((int)B.x == (int)C.x && (int)B.y == (int)C.y));
 	}
 	
 }
