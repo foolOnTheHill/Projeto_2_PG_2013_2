@@ -69,7 +69,7 @@ public class Inputs {
 
 	}
 	
-	public static Iluminacao getIluminacao(BufferedReader iluminacao) throws NumberFormatException, IOException {
+	public static Iluminacao getIluminacao(Camera camera, BufferedReader iluminacao) throws NumberFormatException, IOException {
 		String x, y, z, linha, temp[];
 		
 		if (iluminacao.ready()) {
@@ -84,6 +84,7 @@ public class Inputs {
 			x = temp[0];
 			y = temp[1];
 			z = temp[2];
+			
 			pl = new Ponto(Double.valueOf(x), Double.valueOf(y), Double.valueOf(z));
 			
 			linha = iluminacao.readLine();
@@ -94,6 +95,7 @@ public class Inputs {
 			x = temp[0];
 			y = temp[1];
 			z = temp[2];
+			
 			ia[0] = Double.valueOf(x);
 			ia[1] = Double.valueOf(y);
 			ia[2] = Double.valueOf(z);
@@ -106,6 +108,7 @@ public class Inputs {
 			x = temp[0];
 			y = temp[1];
 			z = temp[2];
+			
 			od[0] = Double.valueOf(x);
 			od[1] = Double.valueOf(y);
 			od[2] = Double.valueOf(z);
@@ -118,6 +121,7 @@ public class Inputs {
 			x = temp[0];
 			y = temp[1];
 			z = temp[2];
+			
 			il[0] = Double.valueOf(x);
 			il[1] = Double.valueOf(y);
 			il[2] = Double.valueOf(z);
@@ -125,6 +129,18 @@ public class Inputs {
 			linha = iluminacao.readLine();
 			n = Double.valueOf(linha);
 
+			pl.x -= camera.C.x;
+			pl.y -= camera.C.y;
+			pl.z -= camera.C.z;
+
+			double x_visao = (pl.x * camera.U.x) + (pl.y * camera.U.y) + (pl.z * camera.U.z);
+			double y_visao = (pl.x * camera.V.x) + (pl.y * camera.V.y) + (pl.z * camera.V.z);
+			double z_visao = (pl.x * camera.N.x) + (pl.y * camera.N.y) + (pl.z * camera.N.z);
+
+			pl.x = x_visao;
+			pl.y = y_visao;
+			pl.z = z_visao;
+			
 			Iluminacao ilum = new Iluminacao(ka, kd, ks, n, pl, ia, od, il);
 			return ilum;
 		} else {
@@ -224,14 +240,15 @@ public class Inputs {
 
 			for (int i = 0; i < qnt_pontos; i++) {
 				double x_temp, y_temp, z_temp;
+				
 				x_temp = pontos_visao[i].x;
 				y_temp = pontos_visao[i].y;
 				z_temp = pontos_visao[i].z;
 
 				pontos[i].x = (camera.d / camera.hx) * (x_temp / z_temp);
 				pontos[i].y = (camera.d / camera.hy) * (y_temp / z_temp);
-
 				pontos[i].z = 0;
+				
 				pontos[i].id = i;
 			}
 
