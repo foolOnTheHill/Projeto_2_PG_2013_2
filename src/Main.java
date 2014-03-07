@@ -5,10 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -16,6 +16,24 @@ import javax.swing.SwingUtilities;
 public class Main extends JFrame {
 	static Main info;
 
+	private static Camera camera;
+	private static Objeto objeto;
+	private static Iluminacao lux;
+	private static BufferedReader pCamera;
+	private static BufferedReader pIluminacao;
+	private static BufferedReader pObjeto;
+	private static JPanel panel;
+	private static JButton but;
+	private static JLabel cam;
+	private static JLabel objet;
+	private static JLabel comp;
+	private static JLabel fator;
+	private static JTextField compTxt;
+	private static JTextField fatorTxt;
+	private static JTextField cameraTxt;
+	private static JTextField objTxt;
+	private static JFrame novo;
+	
 	private static final long serialVersionUID = 1L;
 
 	public Main(Camera camera, Objeto objeto, Iluminacao lux, char componente, double fator) {
@@ -32,31 +50,32 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
-		final Camera camera = null;
-		final Objeto objeto = null;
-		final Iluminacao lux = null;
-		final BufferedReader pCamera = null;
-		final BufferedReader pIluminacao = null;
-		final BufferedReader pObjeto = null;
+		camera = null;
+		objeto = null;
+		lux = null;
+		pCamera = null;
+		pIluminacao = null;
+		pObjeto = null;
 		
-		JFrame novo = new JFrame();
-		novo.setTitle("Entradas");
+		novo = new JFrame();
+		novo.setTitle("Configurações");
 		novo.setSize(300, 140);
 		novo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		novo.setLocationRelativeTo(null);
 		novo.setResizable(false);
 		novo.setLocation(5, 5);
 		
-		JPanel panel = new JPanel();
-		JButton but = new JButton("Visualizar");
-		JLabel cam = new JLabel("Camera");
-		JLabel objet = new JLabel("Objeto  ");
-		JLabel comp = new JLabel("Componente");
-		JLabel fator = new JLabel("Fator");
-		final JTextField compTxt = new JTextField(5);
-		final JTextField fatorTxt = new JTextField(5);
-		final JTextField cameraTxt = new JTextField(20);
-		final JTextField objTxt = new JTextField(20);
+		panel = new JPanel();
+		but = new JButton("Visualizar");
+		cam = new JLabel("Camera");
+		objet = new JLabel("Objeto  ");
+		comp = new JLabel("Componente");
+		fator = new JLabel("Fator");
+		
+		compTxt = new JTextField(5);
+		fatorTxt = new JTextField(5);
+		cameraTxt = new JTextField(20);
+		objTxt = new JTextField(20);
 		
 		cameraTxt.setSize(100, 100);
 		panel.add(cam);
@@ -71,53 +90,90 @@ public class Main extends JFrame {
 		novo.add(panel);
 
 		novo.setVisible(true);
-
+		novo.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		but.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
+				
+				char comp = compTxt.getText().toUpperCase().charAt(0);
+				double f;
+				
+				if (compTxt.getText().equals("") || compTxt.getText().length() > 1 || (comp != 'R' && comp != 'G' && comp != 'B')) {
+					JOptionPane.showMessageDialog(null, "Informe o componente que deve ser perturbado! (R, G, ou B)");
+					return;
+				} else if (cameraTxt.getText().equals("") || objTxt.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Informe os nomes dos arquivos da câmera e do objeto!");
+					return;
+				} 
+				
 				try {
-					botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), compTxt.getText().charAt(0), fatorTxt.getText(), camera, objeto, lux);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					f = Double.parseDouble(fatorTxt.getText());
 				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Digite um fator válido! (entre 0 e 1)");
+					return;
 				}
+				
+				botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), comp, f, camera, objeto, lux);
 			}
 		});
 
 	}
 
-	public static void botao1(BufferedReader pCamera,
-			BufferedReader pIluminacao, BufferedReader pObjeto,
-			String cameraEntrada, String objetoEntrada, char comp, String fator, Camera camera,
-			Objeto objeto, Iluminacao lux) throws NumberFormatException, IOException {
+	@SuppressWarnings("resource")
+	public static void botao1(BufferedReader pCamera, BufferedReader pIluminacao, BufferedReader pObjeto, String cameraEntrada, String objetoEntrada, char comp, double fator, Camera camera, Objeto objeto, Iluminacao lux) {
 
 		String entradaCamera = "entradas\\Cameras\\" + cameraEntrada + ".cfg";
 		String entradaObjeto = "entradas\\Objetos\\" + objetoEntrada + ".byu";
 
-		pCamera = new BufferedReader(new FileReader(entradaCamera));
-		pIluminacao = new BufferedReader(new FileReader("entradas\\iluminacao.txt"));
-		pObjeto = new BufferedReader(new FileReader(entradaObjeto));
+		try {
+			pCamera = new BufferedReader(new FileReader(entradaCamera));
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "O Arquivo da câmera não foi encontrado!");
+			return;
+		}
 		
-		camera = Inputs.getCamera(pCamera);
-		lux = Inputs.getIluminacao(camera, pIluminacao);
-		objeto = Inputs.getObjeto(camera, pObjeto);
-
-		double fat = Double.parseDouble(fator);
+		try {
+			pIluminacao = new BufferedReader(new FileReader("entradas\\iluminacao.txt"));
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "O Arquivo da iluminação não foi encontrado!");
+			return;
+		}
+		
+		try {
+			pObjeto = new BufferedReader(new FileReader(entradaObjeto));
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "O Arquivo do objeto não foi encontrado!");
+			return;
+		}
+		
+		try {
+			camera = Inputs.getCamera(pCamera);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo da câmera!");
+			return;
+		}
+		
+		try {
+			lux = Inputs.getIluminacao(camera, pIluminacao);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo da iluminação!");
+			return;
+		}
+		
+		try {
+			objeto = Inputs.getObjeto(camera, pObjeto);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo do objeto!");
+			return;
+		}
 		
 		if (info != null) {
 			info.dispose();
 		}
-		
-		info = new Main(camera, objeto, lux, comp, fat);
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				info.setLocation(300, 0);
-				info.setVisible(true);
-			}
-		});
+				
+		info = new Main(camera, objeto, lux, comp, fator);
+		info.setLocation(300, 0);
+		info.setVisible(true);
 		
 	}
 
