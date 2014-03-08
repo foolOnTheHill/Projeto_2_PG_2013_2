@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 public class Main extends JFrame {
 	static Main info;
@@ -95,19 +94,8 @@ public class Main extends JFrame {
 		but.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				
-				char comp;
 				double f;
 				
-				if (compTxt.getText().equals("") || compTxt.getText().length() > 1 || (compTxt.getText().toUpperCase().charAt(0) != 'R' && compTxt.getText().toUpperCase().charAt(0) != 'G' && compTxt.getText().toUpperCase().charAt(0) != 'B')) {
-					JOptionPane.showMessageDialog(null, "Informe o componente que deve ser perturbado! (R, G, ou B)");
-					return;
-				} else if (cameraTxt.getText().equals("") || objTxt.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "Informe os nomes dos arquivos da câmera e do objeto!");
-					return;
-				} 
-				
-				comp = compTxt.getText().toUpperCase().charAt(0);
-
 				try {
 					f = Double.parseDouble(fatorTxt.getText());
 				} catch (NumberFormatException e) {
@@ -115,14 +103,13 @@ public class Main extends JFrame {
 					return;
 				}
 				
-				botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), comp, f, camera, objeto, lux);
+				botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), f, camera, objeto, lux);
 			}
 		});
 
 	}
 
-	@SuppressWarnings("resource")
-	public static void botao1(BufferedReader pCamera, BufferedReader pIluminacao, BufferedReader pObjeto, String cameraEntrada, String objetoEntrada, char comp, double fator, Camera camera, Objeto objeto, Iluminacao lux) {
+	public static void botao1(BufferedReader pCamera, BufferedReader pIluminacao, BufferedReader pObjeto, String cameraEntrada, String objetoEntrada, double fator, Camera camera, Objeto objeto, Iluminacao lux) {
 
 		String entradaCamera = "entradas\\Cameras\\" + cameraEntrada + ".cfg";
 		String entradaObjeto = "entradas\\Objetos\\" + objetoEntrada + ".byu";
@@ -147,6 +134,18 @@ public class Main extends JFrame {
 			JOptionPane.showMessageDialog(null, "O Arquivo do objeto não foi encontrado!");
 			return;
 		}
+		
+		char comp;
+		
+		if (compTxt.getText().equals("") || compTxt.getText().length() > 1 || (compTxt.getText().toUpperCase().charAt(0) != 'R' && compTxt.getText().toUpperCase().charAt(0) != 'G' && compTxt.getText().toUpperCase().charAt(0) != 'B')) {
+			JOptionPane.showMessageDialog(null, "Informe o componente que deve ser perturbado! (R, G, ou B)");
+			return;
+		} else if (cameraTxt.getText().equals("") || objTxt.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Informe os nomes dos arquivos da cÃ¢mera e do objeto!");
+			return;
+		} 
+		
+		comp = compTxt.getText().toUpperCase().charAt(0);
 		
 		try {
 			camera = Inputs.getCamera(pCamera);
