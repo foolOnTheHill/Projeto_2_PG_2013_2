@@ -13,25 +13,25 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Main extends JFrame {
-	static Main info;
+	static Main render;
 
 	private static Camera camera;
 	private static Objeto objeto;
-	private static Iluminacao lux;
+	private static Iluminacao iluminacao;
 	private static BufferedReader pCamera;
 	private static BufferedReader pIluminacao;
 	private static BufferedReader pObjeto;
-	private static JPanel panel;
-	private static JButton but;
-	private static JLabel cam;
-	private static JLabel objet;
-	private static JLabel comp;
-	private static JLabel fator;
+	private static JPanel configPanel;
+	private static JButton button_view;
+	private static JLabel lb_cam;
+	private static JLabel lb_objet;
+	private static JLabel lb_comp;
+	private static JLabel lb_fator;
 	private static JTextField compTxt;
 	private static JTextField fatorTxt;
 	private static JTextField cameraTxt;
 	private static JTextField objTxt;
-	private static JFrame novo;
+	private static JFrame configWindow;
 	
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class Main extends JFrame {
 	}
 
 	private void initUI(Camera camera, Objeto objeto, Iluminacao lux, char componente, double fator) {
-		setTitle("Projeto 2 - PG");
+		setTitle("Projeto 2");
 		add(new Window(objeto, lux, componente, fator));
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,25 +51,25 @@ public class Main extends JFrame {
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		camera = null;
 		objeto = null;
-		lux = null;
+		iluminacao = null;
 		pCamera = null;
 		pIluminacao = null;
 		pObjeto = null;
 		
-		novo = new JFrame();
-		novo.setTitle("Configurações");
-		novo.setSize(300, 140);
-		novo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		novo.setLocationRelativeTo(null);
-		novo.setResizable(false);
-		novo.setLocation(5, 5);
+		configWindow = new JFrame();
+		configWindow.setTitle("Configurações");
+		configWindow.setSize(300, 140);
+		configWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		configWindow.setLocationRelativeTo(null);
+		configWindow.setResizable(false);
+		configWindow.setLocation(5, 5);
 		
-		panel = new JPanel();
-		but = new JButton("Visualizar");
-		cam = new JLabel("Camera");
-		objet = new JLabel("Objeto  ");
-		comp = new JLabel("Componente");
-		fator = new JLabel("Fator");
+		configPanel = new JPanel();
+		button_view = new JButton("Visualizar");
+		lb_cam = new JLabel("Camera");
+		lb_objet = new JLabel("Objeto  ");
+		lb_comp = new JLabel("Componente");
+		lb_fator = new JLabel("Fator");
 		
 		compTxt = new JTextField(5);
 		fatorTxt = new JTextField(5);
@@ -77,21 +77,21 @@ public class Main extends JFrame {
 		objTxt = new JTextField(20);
 		
 		cameraTxt.setSize(100, 100);
-		panel.add(cam);
-		panel.add(cameraTxt);
-		panel.add(objet);
-		panel.add(objTxt);
-		panel.add(comp);
-		panel.add(compTxt);
-		panel.add(fator);
-		panel.add(fatorTxt);
-		panel.add(but);
-		novo.add(panel);
+		configPanel.add(lb_cam);
+		configPanel.add(cameraTxt);
+		configPanel.add(lb_objet);
+		configPanel.add(objTxt);
+		configPanel.add(lb_comp);
+		configPanel.add(compTxt);
+		configPanel.add(lb_fator);
+		configPanel.add(fatorTxt);
+		configPanel.add(button_view);
+		configWindow.add(configPanel);
 
-		novo.setVisible(true);
-		novo.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		configWindow.setVisible(true);
+		configWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		but.addActionListener(new ActionListener() {
+		button_view.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				
 				double f;
@@ -103,7 +103,7 @@ public class Main extends JFrame {
 					return;
 				}
 				
-				botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), f, camera, objeto, lux);
+				botao1(pCamera, pIluminacao, pObjeto, cameraTxt.getText(), objTxt.getText(), f, camera, objeto, iluminacao);
 			}
 		});
 
@@ -168,13 +168,13 @@ public class Main extends JFrame {
 			return;
 		}
 		
-		if (info != null) {
-			info.dispose();
+		if (render != null) {
+			render.dispose();
 		}
 				
-		info = new Main(camera, objeto, lux, comp, fator);
-		info.setLocation(300, 0);
-		info.setVisible(true);
+		render = new Main(camera, objeto, lux, comp, fator);
+		render.setLocation(300, 0);
+		render.setVisible(true);
 		
 	}
 
