@@ -95,10 +95,10 @@ public class Main extends JFrame {
 		but.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				
-				char comp = compTxt.getText().toUpperCase().charAt(0);
+				char comp;
 				double f;
 				
-				if (compTxt.getText().equals("") || compTxt.getText().length() > 1 || (comp != 'R' && comp != 'G' && comp != 'B')) {
+				if (compTxt.getText().equals("") || compTxt.getText().length() > 1 || (compTxt.getText().toUpperCase().charAt(0) != 'R' && compTxt.getText().toUpperCase().charAt(0) != 'G' && compTxt.getText().toUpperCase().charAt(0) != 'B')) {
 					JOptionPane.showMessageDialog(null, "Informe o componente que deve ser perturbado! (R, G, ou B)");
 					return;
 				} else if (cameraTxt.getText().equals("") || objTxt.getText().equals("")) {
@@ -106,6 +106,8 @@ public class Main extends JFrame {
 					return;
 				} 
 				
+				comp = compTxt.getText().toUpperCase().charAt(0);
+
 				try {
 					f = Double.parseDouble(fatorTxt.getText());
 				} catch (NumberFormatException e) {
