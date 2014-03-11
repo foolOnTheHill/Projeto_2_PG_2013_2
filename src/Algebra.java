@@ -58,15 +58,6 @@ public class Algebra {
 		return a_b_c;
 	}
 	
-	/*Auxiliar para o cálculo das normais nos vértices*/
-	public static double area(Ponto A, Ponto B, Ponto C){
-		double ux = B.x - A.x;
-		double uy = B.y - A.y;
-		double vx = C.x - A.x;
-		double vy = C.y - A.y;
-		return Math.abs(ux*vy - uy*vx)/2;
-	}
-	
 	/*Auxiliar p/ o Scanline
 	* Referências: Usa o Produto Vetorial no R2 para determinar a orientação dos 3 pontos.
 	* - http://stackoverflow.com/questions/3461453/determine-which-side-of-a-line-a-point-lies */
