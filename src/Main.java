@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Main extends JFrame {
+
 	static Main render;
 
 	private static Camera camera;
@@ -33,15 +34,23 @@ public class Main extends JFrame {
 	private static JTextField objTxt;
 	private static JFrame configWindow;
 	
+	private Window renderWindow;
+	
 	private static final long serialVersionUID = 1L;
 
 	public Main(Camera camera, Objeto objeto, Iluminacao lux, char componente, double fator) {
 		initUI(camera, objeto, lux, componente, fator);
 	}
 
-	private void initUI(Camera camera, Objeto objeto, Iluminacao lux, char componente, double fator) {
+	public void initUI(Camera camera, Objeto objeto, Iluminacao lux, char componente, double fator) {
 		setTitle("Projeto 2");
-		add(new Window(objeto, lux, componente, fator));
+		
+		try {
+			renderWindow.free();
+		} catch (Throwable e) {}
+		
+		renderWindow = new Window(objeto, lux, componente, fator);
+		add(renderWindow);
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -90,6 +99,8 @@ public class Main extends JFrame {
 
 		configWindow.setVisible(true);
 		configWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		configWindow.setEnabled(true);
+		configWindow.enableInputMethods(true);
 		
 		button_view.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -114,6 +125,11 @@ public class Main extends JFrame {
 		String entradaCamera = "entradas\\Cameras\\" + cameraEntrada + ".cfg";
 		String entradaObjeto = "entradas\\Objetos\\" + objetoEntrada + ".byu";
 
+		if (fator < 0 || fator > 1) {
+			JOptionPane.showMessageDialog(null, "Digite um fator válido! (entre 0 e 1)");
+			return;
+		}
+		
 		try {
 			pCamera = new BufferedReader(new FileReader(entradaCamera));
 		} catch (FileNotFoundException e) {
@@ -169,12 +185,15 @@ public class Main extends JFrame {
 		}
 		
 		if (render != null) {
+			render.removeAll();
 			render.dispose();
+			try { render.finalize(); } catch (Throwable e) {}
 		}
-				
+		
 		render = new Main(camera, objeto, lux, comp, fator);
 		render.setLocation(300, 0);
 		render.setVisible(true);
+		render.setEnabled(true);
 		
 	}
 
