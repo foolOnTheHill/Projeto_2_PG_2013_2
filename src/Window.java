@@ -284,6 +284,11 @@ public class Window extends JPanel {
 			objeto.screen[i].y = (int) ((1 - objeto.screen[i].y) * height / 2);
 		}
 	}
+	
+	/*Tentativa de gerenciar melhor o uso de memória.*/
+	public void free() throws Throwable {
+		finalize();
+	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
