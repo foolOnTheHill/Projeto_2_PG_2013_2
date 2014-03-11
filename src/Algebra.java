@@ -1,4 +1,3 @@
-
 class Ponto implements Comparable<Ponto> {
 	double x, y, z;
 	int id;
@@ -57,6 +56,15 @@ public class Algebra {
 		a_b_c[2] = 1 - a_b_c[0] - a_b_c[1];
 		
 		return a_b_c;
+	}
+	
+	/*Auxiliar para o cálculo das normais nos vértices*/
+	public static double area(Ponto A, Ponto B, Ponto C){
+		double ux = B.x - A.x;
+		double uy = B.y - A.y;
+		double vx = C.x - A.x;
+		double vy = C.y - A.y;
+		return Math.abs(ux*vy - uy*vx)/2;
 	}
 	
 	/*Auxiliar p/ o Scanline
