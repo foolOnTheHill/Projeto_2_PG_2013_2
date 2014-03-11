@@ -164,6 +164,7 @@ public class Inputs {
 			pontos_visao = new Ponto[qnt_pontos];
 			triangulos = new int[qnt_triangulos][3];
 			
+			/*Leitura dos pontos*/
 			for (int i = 0; i < qnt_pontos; i++) {
 				linha = objeto.readLine();
 				temp = linha.split(" ");
@@ -180,6 +181,7 @@ public class Inputs {
 				pontos[i].id = i;
 			}
 			
+			/*Leitura dos triângulos*/
 			for (int i = 0; i < qnt_triangulos; i++) {
 				do {
 					linha = objeto.readLine();
@@ -195,11 +197,13 @@ public class Inputs {
 					y = temp[1];
 					z = temp[2];
 				}
+				/*A indexação é a partir do 0*/
 				triangulos[i][0] = Integer.valueOf(x) - 1;
 				triangulos[i][1] = Integer.valueOf(y) - 1;
 				triangulos[i][2] = Integer.valueOf(z) - 1;
 			}
 
+			/*Converte os pontos para o sistema de coordenadas de vista*/
 			for (int i = 0; i < qnt_pontos; i++) {
 				pontos[i].x -= camera.C.x;
 				pontos[i].y -= camera.C.y;
@@ -212,7 +216,8 @@ public class Inputs {
 				pontos_visao[i] = new Ponto(x_visao, y_visao, z_visao);
 				pontos_visao[i].id = i;
 			}
-
+			
+			/*Faz a projeção em perspectiva dos pontos*/
 			for (int i = 0; i < qnt_pontos; i++) {
 				double x_temp, y_temp, z_temp;
 				
@@ -228,9 +233,8 @@ public class Inputs {
 			}
 
 			objeto.close();
-
-			/*Calcula a normal de um vértice fazendo uma média ponderada pelas áreas de cada triângulo que compartilha esse vértice*/
 			
+			/*Cálculo das normais de cada vértice*/
 			Ponto v1 = new Ponto(0.0, 0.0, 0.0), v2 = new Ponto(1.0, 1.0, 1.0);
 			normais_triangulos = new Ponto[qnt_triangulos];
 			normais_vertices = new Ponto[qnt_pontos];
@@ -239,20 +243,11 @@ public class Inputs {
 				normais_vertices[i] = new Ponto(0.0, 0.0, 0.0);
 			}
 			
-			double[] areas = new double[qnt_pontos];
-			
 			for (int i = 0; i < qnt_triangulos; i++) {
 				Ponto p1 = pontos_visao[triangulos[i][0]];
 				Ponto p2 = pontos_visao[triangulos[i][1]];
 				Ponto p3 = pontos_visao[triangulos[i][2]];
 
-				double a = Algebra.area(p1, p2, p3);
-				
-				/*Calcula a soma das áreas dos triângulos que compartilham esses vértices*/
-				areas[triangulos[i][0]] += a; 
-				areas[triangulos[i][1]] += a;
-				areas[triangulos[i][2]] += a;
-				
 				v1.x = p2.x - p1.x;
 				v1.y = p2.y - p1.y;
 				v1.z = p2.z - p1.z;
@@ -261,36 +256,30 @@ public class Inputs {
 				v2.y = p3.y - p1.y;
 				v2.z = p3.z - p1.z;
 
-				normais_triangulos[i] = Algebra.produtoVetorial(v1, v2);
+				normais_triangulos[i] = Algebra.produtoVetorial(v1, v2); // Vetor normal ao plano
 				
 				Algebra.normalizar(normais_triangulos[i]);
 				
-				/*'Soma' ponderada pela área*/
-				normais_vertices[triangulos[i][0]].x += a*normais_triangulos[i].x;
-				normais_vertices[triangulos[i][0]].y += a*normais_triangulos[i].y;
-				normais_vertices[triangulos[i][0]].z += a*normais_triangulos[i].z;
+				/*Atualiza cada normal, somando o vetor normal ao plano determinado pelos três vértices*/
+				normais_vertices[triangulos[i][0]].x += normais_triangulos[i].x;
+				normais_vertices[triangulos[i][0]].y += normais_triangulos[i].y;
+				normais_vertices[triangulos[i][0]].z += normais_triangulos[i].z;
 			
-				normais_vertices[triangulos[i][1]].x += a*normais_triangulos[i].x;
-				normais_vertices[triangulos[i][1]].y += a*normais_triangulos[i].y;
-				normais_vertices[triangulos[i][1]].z += a*normais_triangulos[i].z;
+				normais_vertices[triangulos[i][1]].x += normais_triangulos[i].x;
+				normais_vertices[triangulos[i][1]].y += normais_triangulos[i].y;
+				normais_vertices[triangulos[i][1]].z += normais_triangulos[i].z;
 
-				normais_vertices[triangulos[i][2]].x += a*normais_triangulos[i].x;
-				normais_vertices[triangulos[i][2]].y += a*normais_triangulos[i].y;
-				normais_vertices[triangulos[i][2]].z += a*normais_triangulos[i].z;
-			
-			}
-			
-			/*Calcula a média ponderada pela soma das áreas*/
-			for (int i = 0; i < qnt_pontos; i++) {
-				if (areas[i] != 0) {
-					normais_vertices[i] = new Ponto(normais_vertices[i].x/areas[i], normais_vertices[i].y/areas[i], normais_vertices[i].z/areas[i]);
-				}
+				normais_vertices[triangulos[i][2]].x += normais_triangulos[i].x;
+				normais_vertices[triangulos[i][2]].y += normais_triangulos[i].y;
+				normais_vertices[triangulos[i][2]].z += normais_triangulos[i].z;
+				//
+				
 			}
 			
 			for (int i = 0; i < qnt_pontos; i++) {
 				Algebra.normalizar(normais_vertices[i]);
 			}
-			/*----------------------------------------------------------------------*/
+			//
 			
 			Objeto obj = new Objeto(pontos_visao, pontos, normais_triangulos, normais_vertices, triangulos);
 			return obj;
