@@ -154,7 +154,6 @@ public class Inputs {
 		Ponto pontos_visao [] = null, pontos[] = null;
 		int qnt_pontos, qnt_triangulos, triangulos[][] = null;
 		Ponto normais_triangulos[] = null, normais_vertices[] = null;
-		double left, right, up, down, next, far;
 		String x, y, z, linha, temp[];
 		if (objeto.ready()) {
 			
@@ -214,29 +213,6 @@ public class Inputs {
 				pontos_visao[i] = new Ponto(x_visao, y_visao, z_visao);
 				pontos_visao[i].id = i;
 			}
-
-			left = pontos_visao[0].x;
-			right = left;
-			up = pontos_visao[0].y;
-			down = up;
-			next = pontos_visao[0].z;
-			far = next;
-
-			for (int i = 0; i < qnt_pontos; i++) {
-				if (pontos_visao[i].x < left) {
-					left = pontos_visao[i].x;
-				} else if (pontos_visao[i].x > right) {
-					right = pontos_visao[i].x;
-				} else if (pontos_visao[i].y < down) {
-					down = pontos_visao[i].y;
-				} else if (pontos_visao[i].y > up) {
-					up = pontos_visao[i].y;
-				} else if (pontos_visao[i].z < next) {
-					next = pontos_visao[i].z;
-				} else if (pontos_visao[i].z > far) {
-					far = pontos_visao[i].z;
-				}
-			}	
 
 			for (int i = 0; i < qnt_pontos; i++) {
 				double x_temp, y_temp, z_temp;
