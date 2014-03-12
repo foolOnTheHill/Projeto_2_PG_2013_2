@@ -5,6 +5,12 @@ Visualização de Objetos em 3D
 
 **Parte Específica**: Produzir textura aleatória através da manipulação da cor do objeto.
 
+Instruções
+----------
+
+Os arquivos de entrada (câmera, iluminação e objeto) devem ser colocados no mesmo diretório do projeto em *'entradas/cameras'*, *'entradas/objeto'*.
+A escolha de qual objeto vai ser visualizado deve ser feita através da GUI, onde também devem ser informados qual a componente (R, G ou B) que será 'distorcida', bem como o fator de aleatorização (0 <= *f* <= 1);
+
 Autores:
 --------
 
